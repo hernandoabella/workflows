@@ -225,31 +225,31 @@ graph TB
 State diagram showing the sequence of Docker commands used in daily development work and release processes.
 
 ```mermaid
-stateDiagram-v2
-    [*] --> StartProject: Start development day
+flowchart TD
+    A[Start development day] --> B[Build: docker build .]
+    B --> C[Run: docker run -p 3000:3000]
+    C --> D[Develop: Code with live reload]
+    D --> E[Test: docker exec app npm test]
+    E --> F[Commit: Save changes to Git]
     
-    state StartProject {
-        [*] --> Build: docker build .<br>Create development image
-        Build --> Run: docker run -p 3000:3000<br>Start container
-        Run --> Develop: Write application code<br>with live reload
-        Develop --> Test: docker exec app npm test<br>Run tests in container
-        Test --> Commit: git commit -m "feat: update"<br>Save changes
-    }
+    F --> G[Push: docker push registry/app:dev]
+    G --> H[Deploy staging: docker stack deploy]
+    H --> I[Verify: docker service ls]
+    I --> J{Ready for production?}
     
-    StartProject --> PushImage: docker push registry/app:dev<br>Share with team
-    PushImage --> DeployStaging: docker stack deploy -c staging.yml<br>Deploy to staging
-    DeployStaging --> Verify: docker service ls<br>Check deployment status
-    Verify --> DeployProd: ✅ Ready for production?
+    J -->|Yes| K[Tag: docker tag app:latest app:v1.2.3]
+    J -->|No| L[Continue development]
+    L --> B
     
-    state DeployProd {
-        [*] --> Tag: docker tag app:latest app:v1.2.3<br>Version the release
-        Tag --> Push: docker push registry/app:v1.2.3<br>Push to production registry
-        Push --> Deploy: docker stack deploy -c production.yml<br>Blue-green deployment
-        Deploy --> Monitor: docker stats<br>Monitor performance
-    }
+    K --> M[Push prod: docker push registry/app:v1.2.3]
+    M --> N[Deploy prod: docker stack deploy -c production.yml]
+    N --> O[Monitor: docker stats]
+    O --> P[✅ Release complete]
     
-    DeployProd --> [*]: Release complete
-
+    style A fill:#3498db
+    style F fill:#9b59b6
+    style P fill:#2ecc71
+    style L fill:#f39c12
 ```
 
 ## Docker Security Workflow
