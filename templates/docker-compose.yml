@@ -1,1 +1,90 @@
+🐳 docker-compose.yml (Generic)
+version: "3.9"
 
+services:
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - /app/node_modules
+    restart: unless-stopped
+    command: npm run dev
+
+📁 Required Files
+.
+├── Dockerfile
+├── docker-compose.yml
+├── .env
+└── package.json
+
+🧪 .env Example
+APP_PORT=3000
+NODE_ENV=development
+
+▶️ Run Commands
+docker compose up
+
+
+Detached mode:
+
+docker compose up -d
+
+
+Stop:
+
+docker compose down
+
+
+Rebuild:
+
+docker compose up --build
+
+🧩 With Database (PostgreSQL Example)
+version: "3.9"
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_DB: app_db
+      POSTGRES_USER: app_user
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:
+
+🏷️ Why this is good for your workflows repo
+
+✅ Environment-based
+
+✅ Works for dev & staging
+
+✅ Easy to extend
+
+✅ Production-friendly defaults
+
+✅ Copy–paste ready
