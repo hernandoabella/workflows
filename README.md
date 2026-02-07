@@ -1,7 +1,48 @@
 # Workflows 
 
-### Backend 
-- [python-workflow.md](python-workflow.md) - General Python development, tooling, and environments
+## Backend 
+### Python
+```mermaid
+flowchart TD
+    A([Start]) --> B[Define Requirements]
+    B --> C[Design Solution]
+    
+    subgraph Environment
+        D[Setup Virtual Env] --> E[Install Dependencies]
+        E --> F[Create Project Structure]
+    end
+
+    F --> G[Write Code]
+    G --> H[Run Program]
+
+    H --> I{Errors?}
+
+    I -- Yes --> J[Debug & Fix]
+    J --> G
+
+    I -- No --> K[Add Tests]
+    K --> L[Run Tests]
+
+    L --> M{Tests Pass?}
+    M -- No --> J
+    
+    M -- Yes --> N[Refactor & Optimize]
+    
+    subgraph Release
+        N --> O[Documentation]
+        O --> P[Packaging / Deployment]
+    end
+
+    P --> Q[Maintenance]
+    Q --> R([End])
+
+    style A fill:#f9f,stroke:#333
+    style R fill:#f9f,stroke:#333
+    style I fill:#fff4dd,stroke:#d4a017
+    style M fill:#fff4dd,stroke:#d4a017
+```
+
+
 - [django-workflow.md](django-workflow.md) - Django project structure, commands, and deployment
 - [fast-api-workflow.md](fast-api-workflow.md) - FastAPI development patterns and async setup
 - [nodejs-workflow.md](nodejs-workflow.md) - Node.js/NPM/JavaScript workflows
